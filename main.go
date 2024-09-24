@@ -1,15 +1,19 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"os"
 
+	_ "github.com/lib/pq"
 	"github.com/squashd/blog-aggregator-cli/internal/config"
+	"github.com/squashd/blog-aggregator-cli/internal/database"
 )
 
 type state struct {
 	cfg *config.Config
+	db  *database.Queries
 }
 
 func main() {
@@ -17,13 +21,19 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error reading config: %v", err)
 	}
-	appState := state{cfg: &cfg}
+	conn, err := sql.Open("postgres", cfg.DBURL)
+	queries := database.New(conn)
 
-	commands := commands{
-		registeredCommands: make(map[string]func(*state, command) error),
+	appState := state{cfg: &cfg, db: queries}
+
+	cmds := commands{
+		registeredCmds: make(map[string]func(*state, command) error),
 	}
 
-	commands.register("login", handlerLogin)
+	cmds.register("login", handlerLogin)
+	cmds.register("register", handlerRegister)
+	cmds.register("reset", handlerReset)
+	cmds.register("users", handlerGetUsers)
 
 	if len(os.Args) < 2 {
 		fmt.Println("Usage: cli <command> [args...]")
@@ -36,9 +46,10 @@ func main() {
 		cmdArgs = os.Args[2:]
 	}
 
-	err = commands.run(&appState, command{Name: cmdName, Args: cmdArgs})
+	err = cmds.run(&appState, command{Name: cmdName, Args: cmdArgs})
 	if err != nil {
-		log.Fatalf("Error running command: %v", err)
+		fmt.Printf("Error running command: %v", err)
+		os.Exit(1)
 	}
 
 }

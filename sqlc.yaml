@@ -1,0 +1,11 @@
+version: "2"
+sql:
+  - schema: "internal/database/sql/schema"
+    queries: "internal/database/sql/queries"
+    engine: "postgresql"
+    gen:
+      go:
+        out: "internal/database"
+        emit_empty_slices: true
+        emit_pointers_for_null_types: true
+
