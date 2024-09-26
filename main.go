@@ -37,6 +37,7 @@ func main() {
 
 	if len(os.Args) < 2 {
 		fmt.Println("Usage: cli <command> [args...]")
+		os.Exit(1)
 		return
 	}
 
