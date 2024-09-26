@@ -42,7 +42,7 @@ func main() {
 	cmds.register("unfollow", middlewareLoggedIn(handlerUnfollow))
 
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: cli <command> [args...]")
+		fmt.Println("usage: cli <command> [args...]")
 		os.Exit(1)
 		return
 	}
@@ -55,7 +55,7 @@ func main() {
 
 	err = cmds.run(&appState, command{Name: cmdName, Args: cmdArgs})
 	if err != nil {
-		fmt.Printf("Error running command: %v", err)
+		fmt.Printf("Error running command: %v\n", err)
 		os.Exit(1)
 	}
 

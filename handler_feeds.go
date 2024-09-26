@@ -60,22 +60,6 @@ func fetchFeed(ctx context.Context, feedURL string) (*RSSFeed, error) {
 
 }
 
-func handlerAgg(s *state, cmd command) error {
-	if len(cmd.Args) == 0 {
-		return fmt.Errorf("agg requires a feed URL")
-	}
-	url := cmd.Args[0]
-
-	feed, err := fetchFeed(context.Background(), url)
-	if err != nil {
-		return fmt.Errorf("unable to fetch feed: %w", err)
-	}
-
-	fmt.Printf("%+w\n", *feed)
-
-	return nil
-}
-
 func handlerAddFeed(s *state, cmd command, user database.User) error {
 	if len(cmd.Args) < 2 {
 		return fmt.Errorf("usage: %s <feed_name> <feed_url>", cmd.Name)

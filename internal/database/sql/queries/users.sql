@@ -13,7 +13,11 @@ WHERE
     name = $1;
 
 -- name: ResetUsers :exec
-DELETE FROM users;
+DELETE FROM
+    users;
 
 -- name: GetUsers :many
-SELECT * FROM users;
+SELECT
+    *
+FROM
+    users;
